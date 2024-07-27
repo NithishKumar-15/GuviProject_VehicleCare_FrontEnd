@@ -15,13 +15,14 @@ export const HomePage = () => {
   const feedBacks=useSelector((state)=>state.ratings);
   console.log(feedBacks);
   const navigate=useNavigate();
-
+  const [user,setUser]=useState("");
   
   useEffect(()=>{
     async function verifyToken(){
       try{
      await instance.post('Users/verifyToken',{token:token}).then((res)=>{
-      
+      console.log(res.data.UserName)
+      setUser(res.data.UserName.name);
     })
     }catch(e){
       console.log("err")
@@ -65,7 +66,7 @@ export const HomePage = () => {
                 </li>
               </ul>
               <span className="navbar-text me-2">
-                Nithish kumar
+                {user}
               </span>
               <img className="rounded-circle navbar-text" alt="avatar1" src="../images/profile.png" height={50} width={40} />
             </div>
@@ -75,7 +76,7 @@ export const HomePage = () => {
 
       {pages==="Home"&&<ServiceAndRatings allServiceDetails={allServiceDetails} feedBacks={feedBacks}/>}
       {/* Appoiment Booking */}
-      {pages==="Appointment"&&<AppoimentBooking/>}
+      {pages==="Appointment"&&<AppoimentBooking allServiceDetails={allServiceDetails}/>}
       {/* Previous History */}
       {pages==="PreviousHistory"&&<PrevoiusHistory/>}
       

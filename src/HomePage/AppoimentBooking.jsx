@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const AppoimentBooking = () => {
+export const AppoimentBooking = ({allServiceDetails}) => {
 
     return (
         <>
@@ -50,11 +50,7 @@ export const AppoimentBooking = () => {
                                     <label htmlFor='typeofservice' className='col-lg-5 col-md-auto col-form-label'>Type of Service</label>
                                     <div className='col'>
                                         <select type="text" className='form-control' id='typeofservice'>
-                                            <option>Select</option>
-                                            <option>Select</option>
-                                            <option>Select</option>
-                                            <option>Select</option>
-                                            <option>Select</option>
+                                            {allServiceDetails.map((val)=>(<option key={val.ServiceName}value={val.ServiceName}>{val.ServiceName}</option>))}
                                         </select>
                                     </div>
                                 </div>
