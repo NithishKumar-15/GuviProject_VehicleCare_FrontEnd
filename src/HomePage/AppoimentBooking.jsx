@@ -1,6 +1,42 @@
 import React from 'react'
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { useRef } from 'react';
+import instance from '../AxiosInstance/axiosinstance';
 
-export const AppoimentBooking = ({allServiceDetails}) => {
+export const AppoimentBooking = ({allServiceDetails,user,trackVehicle}) => {
+
+   
+    const [successMessage,setSuccessMessage]=useState(null)
+    //useRefs to handel the appoinment form inputs
+    const customerName=useRef();
+    const phoneNumber=useRef();
+    const vehicleNumber=useRef();
+    const appoinmentDate=useRef();
+    const service=useRef();
+    console.log(trackVehicle)
+
+    async function appoinmentBooking(e){
+        e.preventDefault();
+
+        const data={
+            customerName:customerName.current.value,
+            phoneNumber:phoneNumber.current.value,
+            vehicleNumber:vehicleNumber.current.value,
+            appoinmentDate:appoinmentDate.current.value,
+            serviceAmount:service.current.value
+        }
+
+            console.log(data);
+            
+           await instance.post("HomePage/AppointmentBook",data).then((res)=>{
+                if(res.data.message==="Appoiment added"){
+                    phoneNumber.current.value="";
+                    vehicleNumber.current.value=""
+                    setSuccessMessage("");
+                }
+           })
+    }
 
     return (
         <>
@@ -11,37 +47,37 @@ export const AppoimentBooking = ({allServiceDetails}) => {
                     <div className='w-100 h-100 d-flex flex-column p-3' id='formcontentAP'>
 
                         <div className='w-75 h-50 m-auto'>
-                            <form>
+                            <form onSubmit={appoinmentBooking}>
                                 <div className='row mb-3'>
                                     <label htmlFor='customerName' className='col-lg-5 col-md-auto col-form-label'>Customer Name</label>
                                     <div className='col'>
-                                        <input type="text" className='form-control' id='customerName' />
+                                        <input type="text" className='form-control' id='customerName'ref={customerName} value={user} disabled/>
                                     </div>
                                 </div>
 
                                 <div className='row mb-3'>
                                     <label htmlFor='phoneNumber' className='col-lg-5 col-md-auto col-form-label'>Phone Number</label>
                                     <div className='col'>
-                                        <input type="number" className='form-control' id='phoneNumber' />
+                                        <input type="number" className='form-control' id='phoneNumber' ref={phoneNumber}/>
                                     </div>
                                 </div>
 
                                 <div className='row mb-3'>
                                     <label htmlFor='vehicleNumber' className='col-lg-5 col-md-auto col-form-label'>Vehicle Number</label>
                                     <div className='col'>
-                                        <input type="text" className='form-control' id='vehicleNumber' />
+                                        <input type="text" className='form-control' id='vehicleNumber' ref={vehicleNumber}/>
                                     </div>
                                 </div>
 
                                 <div className='row mb-3'>
                                     <label htmlFor='appoiment' className='col-lg-5 col-md-auto col-form-label'>Appoiments</label>
                                     <div className='col'>
-                                        <select type="text" className='form-control' id='appoiment'>
-                                            <option>Select</option>
-                                            <option>Select</option>
-                                            <option>Select</option>
-                                            <option>Select</option>
-                                            <option>Select</option>
+                                        <select type="text" className='form-control' id='appoiment' ref={appoinmentDate}>
+                                            <option value="2024/7/28/7">2024/06/28</option>
+                                            <option value="2024/7/28/7">2024/06/28</option>
+                                            <option value="2024/7/28/7">2024/06/28</option>
+                                            <option value="2024/7/28/7">2024/06/28</option>
+                                            <option value="2024/7/28/7">2024/06/28</option>
                                         </select>
                                     </div>
                                 </div>
@@ -49,11 +85,16 @@ export const AppoimentBooking = ({allServiceDetails}) => {
                                 <div className='row mb-3'>
                                     <label htmlFor='typeofservice' className='col-lg-5 col-md-auto col-form-label'>Type of Service</label>
                                     <div className='col'>
-                                        <select type="text" className='form-control' id='typeofservice'>
-                                            {allServiceDetails.map((val)=>(<option key={val.ServiceName}value={val.ServiceName}>{val.ServiceName}</option>))}
+                                        <select type="text" className='form-control' id='typeofservice'ref={service}>
+                                            {allServiceDetails.map((val)=>(<option key={val.ServiceName} value={val.Price}>{val.ServiceName}</option>))}
                                         </select>
                                     </div>
                                 </div>
+                                {successMessage!=null&& 
+                                <div className='mb-3  text-center'>
+                                <label className='form-text text-success'>Your Appoinment Booked you will get email on date of appoinment Please login again to track your vehicle</label>
+                                </div>
+                                }
                                 <button className='btn bg-dark text-white d-flex mx-auto'>Book Appointment</button>
                             </form>
                         </div>
@@ -64,9 +105,10 @@ export const AppoimentBooking = ({allServiceDetails}) => {
             </div>
 
             <h1 className='text-center mt-5'>Track your vehicle</h1>
-
-            <div className='trackAP mx-auto w-75 my-5 border rounded'>
-                <span className='h5'>Vehicle Number: </span> <span className='h5'>TN-04-BQ-0240</span>
+           {trackVehicle.length>0&&
+           trackVehicle.map((val)=>(
+            <div className='trackAP mx-auto w-75 my-5 border rounded' key={val.vehicleNumber}>
+                <span className='h5'>Vehicle Number: </span> <span className='h5'>{val.vehicleNumber}</span>
                 <div className='row my-5 mx-auto'>
                     <div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
                         <h5>Work Started</h5>
@@ -89,11 +131,13 @@ export const AppoimentBooking = ({allServiceDetails}) => {
 
                 </div>
                 <div className='d-flex justify-content-between px-3 mb-3'>
-                    <span className='h4'>Amount : 0 ₹</span>
+                    <span className='h4'>Amount : {val.serviceAmount} ₹</span>
                     <button className='btn bg-dark text-white' disabled>Pay</button>
                 </div>
             </div>
 
+           ))
+           } 
         </>
     )
 }

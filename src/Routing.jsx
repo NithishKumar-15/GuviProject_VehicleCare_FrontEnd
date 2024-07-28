@@ -9,15 +9,18 @@ import store from './Store/store'
 export const Routing = () => {
   return (
 
-    <Provider store={store}>
+   
     <BrowserRouter> 
     <Routes>
     <Route path='/' element={<Login></Login>}></Route>
     <Route path='/NewAccount' element={<NewAccount></NewAccount>}></Route>
-    <Route path='/Home/:token' element={<HomePage></HomePage>}></Route>
+
+    <Route path='/Home/:token' element={ <Provider store={store}>
+      <HomePage></HomePage>
+      </Provider>}></Route>
+      
     </Routes> 
     </BrowserRouter>
-    </Provider>
     
   )
 }

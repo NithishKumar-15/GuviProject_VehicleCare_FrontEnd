@@ -15,15 +15,29 @@ export const HomePage = () => {
   const feedBacks=useSelector((state)=>state.ratings);
   console.log(feedBacks);
   const navigate=useNavigate();
+
   const [user,setUser]=useState("");
+  
+   //State to track the vehicle
+   const [trackVehicle,setTrackVehicle]=useState([]);
   
   useEffect(()=>{
     async function verifyToken(){
       try{
-     await instance.post('Users/verifyToken',{token:token}).then((res)=>{
+     await instance.post('Users/verifyToken',{token:token}).then(async(res)=>{
       console.log(res.data.UserName)
       setUser(res.data.UserName.name);
+
+      const data={
+        user:res.data.UserName.name
+      }
+
+      await instance.post("HomePage/GetUserAppointment",data).then((res)=>{
+        console.log(res.data)
+        setTrackVehicle([...res.data[0].Appointment]);
+      })
     })
+
     }catch(e){
       console.log("err")
       navigate("/")
@@ -76,7 +90,7 @@ export const HomePage = () => {
 
       {pages==="Home"&&<ServiceAndRatings allServiceDetails={allServiceDetails} feedBacks={feedBacks}/>}
       {/* Appoiment Booking */}
-      {pages==="Appointment"&&<AppoimentBooking allServiceDetails={allServiceDetails}/>}
+      {pages==="Appointment"&&<AppoimentBooking allServiceDetails={allServiceDetails} user={user} trackVehicle={trackVehicle}/>}
       {/* Previous History */}
       {pages==="PreviousHistory"&&<PrevoiusHistory/>}
       
