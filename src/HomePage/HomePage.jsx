@@ -19,7 +19,7 @@ export const HomePage = () => {
   const [user,setUser]=useState("");
   
    //State to track the vehicle
-   const [trackVehicle,setTrackVehicle]=useState([]);
+   const [trackVehicle,setTrackVehicle]=useState();
   
   useEffect(()=>{
     async function verifyToken(){
@@ -34,7 +34,11 @@ export const HomePage = () => {
 
       await instance.post("HomePage/GetUserAppointment",data).then((res)=>{
         console.log(res.data)
-        setTrackVehicle([...res.data[0].Appointment]);
+        if(Object.keys(res.data[0].Appointment).length===0){
+          setTrackVehicle("");
+        }else{
+          setTrackVehicle(res.data[0].Appointment);
+        }
       })
     })
 

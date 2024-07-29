@@ -1,7 +1,4 @@
-import React from 'react'
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { useRef } from 'react';
+import { React,useState,useRef } from 'react';
 import instance from '../AxiosInstance/axiosinstance';
 
 export const AppoimentBooking = ({allServiceDetails,user,trackVehicle}) => {
@@ -24,11 +21,10 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle}) => {
             phoneNumber:phoneNumber.current.value,
             vehicleNumber:vehicleNumber.current.value,
             appoinmentDate:appoinmentDate.current.value,
-            serviceAmount:service.current.value
+            service:service.current.value
         }
 
-            console.log(data);
-            
+         
            await instance.post("HomePage/AppointmentBook",data).then((res)=>{
                 if(res.data.message==="Appoiment added"){
                     phoneNumber.current.value="";
@@ -70,14 +66,14 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle}) => {
                                 </div>
 
                                 <div className='row mb-3'>
-                                    <label htmlFor='appoiment' className='col-lg-5 col-md-auto col-form-label'>Appoiments</label>
+                                    <label htmlFor='appoiment' className='col-lg-5 col-md-auto col-form-label'>Available Appointments Dates</label>
                                     <div className='col'>
                                         <select type="text" className='form-control' id='appoiment' ref={appoinmentDate}>
-                                            <option value="2024/7/28/7">2024/06/28</option>
-                                            <option value="2024/7/28/7">2024/06/28</option>
-                                            <option value="2024/7/28/7">2024/06/28</option>
-                                            <option value="2024/7/28/7">2024/06/28</option>
-                                            <option value="2024/7/28/7">2024/06/28</option>
+                                            <option value="2024/7/29/1">2024/06/29</option>
+                                            <option value="2024/7/29/1">2024/06/29</option>
+                                            <option value="2024/7/29/1">2024/06/29</option>
+                                            <option value="2024/7/29/1">2024/06/29</option>
+                                            <option value="2024/7/29/1">2024/06/29</option>
                                         </select>
                                     </div>
                                 </div>
@@ -86,7 +82,7 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle}) => {
                                     <label htmlFor='typeofservice' className='col-lg-5 col-md-auto col-form-label'>Type of Service</label>
                                     <div className='col'>
                                         <select type="text" className='form-control' id='typeofservice'ref={service}>
-                                            {allServiceDetails.map((val)=>(<option key={val.ServiceName} value={val.Price}>{val.ServiceName}</option>))}
+                                            {allServiceDetails.map((val)=>(<option key={val.ServiceName} value={`${val.ServiceName}/${val.Price}`}>{val.ServiceName}</option>))}
                                         </select>
                                     </div>
                                 </div>
@@ -105,39 +101,59 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle}) => {
             </div>
 
             <h1 className='text-center mt-5'>Track your vehicle</h1>
-           {trackVehicle.length>0&&
-           trackVehicle.map((val)=>(
-            <div className='trackAP mx-auto w-75 my-5 border rounded' key={val.vehicleNumber}>
-                <span className='h5'>Vehicle Number: </span> <span className='h5'>{val.vehicleNumber}</span>
-                <div className='row my-5 mx-auto'>
-                    <div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
-                        <h5>Work Started</h5>
-                    </div>
 
+           {trackVehicle!=""&&<div className='trackAP mx-auto w-75 my-5 border rounded'>
+                <span className='h5'>Vehicle Number: </span> <span className='h5'>{trackVehicle.vehicleNumber}</span>
+                <div className='row my-5 mx-auto'>
+
+                    {trackVehicle.work==="workstarted"?<div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
+                        <h5>Work Started</h5>
+                    </div>:
+                    <div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(229,229,229)" }}>
+                        <h5>Work Started</h5>
+                    </div>}
+
+                    {trackVehicle.work==="workonprocess"?<div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
+                        <h5>Work On process</h5>
+                    </div>:
                     <div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(229,229,229)" }}>
                         <h5>Work On process</h5>
-                    </div>
+                    </div>}
+
+                    {trackVehicle.work==="fiftypercentofworkcompleted"?<div className='col-lg-3 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
+                        <h5>Fifty percent work completed</h5>
+                    </div>:
                     <div className='col-lg-3 col-md-auto text-center' style={{ backgroundColor: "rgb(229,229,229)" }}>
                         <h5>Fifty percent work completed</h5>
-                    </div>
+                    </div>}
 
+                    {trackVehicle.work==="workgoingtocomplete"?<div className='col-lg-3 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
+                        <h5>Work Going to complete</h5>
+                    </div>:
                     <div className='col-lg-3 col-md-auto text-center' style={{ backgroundColor: "rgb(229,229,229)" }}>
                         <h5>Work Going to complete</h5>
-                    </div>
+                    </div>}
 
+                    {trackVehicle.work==="workcompleted"?<div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
+                        <h5>Work completed</h5>
+                    </div>:
                     <div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(229,229,229)" }}>
                         <h5>Work completed</h5>
-                    </div>
+                    </div>}
 
                 </div>
                 <div className='d-flex justify-content-between px-3 mb-3'>
-                    <span className='h4'>Amount : {val.serviceAmount} ₹</span>
-                    <button className='btn bg-dark text-white' disabled>Pay</button>
+                    {trackVehicle.work==="workstarted"&& <span className='h4'>Amount : {Number(trackVehicle.serviceAmount)/5} ₹</span>}
+                    {trackVehicle.work==="workonprocess"&& <span className='h4'>Amount : {Number(trackVehicle.serviceAmount)/4} ₹</span>}
+                    {trackVehicle.work==="fiftypercentofworkcompleted"&& <span className='h4'>Amount : {Number(trackVehicle.serviceAmount)/3} ₹</span>}
+                    {trackVehicle.work==="workgoingtocomplete"&& <span className='h4'>Amount : {Number(trackVehicle.serviceAmount)/2} ₹</span>}
+                    {trackVehicle.work==="workcompleted"&& <span className='h4'>Amount : {Number(trackVehicle.serviceAmount)} ₹</span>}
+                    {trackVehicle.work==="workcompleted"?<button className='btn bg-dark text-white'>Pay</button>:<button className='btn bg-dark text-white' disabled>Pay</button>}
+                    
                 </div>
-            </div>
-
-           ))
-           } 
+            </div>}
         </>
     )
 }
+
+
