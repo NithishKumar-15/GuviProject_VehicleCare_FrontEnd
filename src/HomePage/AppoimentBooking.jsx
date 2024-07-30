@@ -51,7 +51,8 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) =>
         try{
             const data={
                 service:service,
-                payment:amount
+                payment:amount,
+                user:user
             }
 
             await instance.post("HomePage/payment",data,{
@@ -59,9 +60,15 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) =>
                     "token":token
                 }
             }).then((res)=>{
-               stripe.redirectToCheckout({
-                sessionId:res.data.id,
-               })
+                console.log(res.data)
+                if(res.data.message==="unAuthorized"){
+                    navigate("/")
+                }else{
+                    stripe.redirectToCheckout({
+                    sessionId:res.data.id,
+                   })
+                }
+               
             })
 
         }catch(e){
