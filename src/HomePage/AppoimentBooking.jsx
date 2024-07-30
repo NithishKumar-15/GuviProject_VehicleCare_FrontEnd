@@ -1,9 +1,12 @@
 import { React,useState,useRef } from 'react';
 import instance from '../AxiosInstance/axiosinstance';
+import { loadStripe } from '@stripe/stripe-js';
+import { useNavigate } from 'react-router-dom';
 
-export const AppoimentBooking = ({allServiceDetails,user,trackVehicle}) => {
+const stripe=await loadStripe(import.meta.env.VITE_STRIPE_PLUBISHIBLEKEY);
 
-   
+export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) => {
+
     const [successMessage,setSuccessMessage]=useState(null)
     //useRefs to handel the appoinment form inputs
     const customerName=useRef();
@@ -11,6 +14,9 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle}) => {
     const vehicleNumber=useRef();
     const appoinmentDate=useRef();
     const service=useRef();
+
+    const navigate=useNavigate();
+
     console.log(trackVehicle)
 
     async function appoinmentBooking(e){
@@ -25,13 +31,44 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle}) => {
         }
 
          
-           await instance.post("HomePage/AppointmentBook",data).then((res)=>{
+           await instance.post("HomePage/AppointmentBook",data,{
+            headers:{
+                "token":token
+            }
+           }).then((res)=>{
                 if(res.data.message==="Appoiment added"){
                     phoneNumber.current.value="";
                     vehicleNumber.current.value=""
                     setSuccessMessage("");
+                }else if(res.data.message==="unAuthorized"){
+                    navigate('/');
                 }
            })
+    }
+
+    async function paymentProcess(amount,service){
+        console.log(service,amount);
+        try{
+            const data={
+                service:service,
+                payment:amount
+            }
+
+            await instance.post("HomePage/payment",data,{
+                headers:{
+                    "token":token
+                }
+            }).then((res)=>{
+               stripe.redirectToCheckout({
+                sessionId:res.data.id,
+               })
+            })
+
+        }catch(e){
+            console.log(e)
+
+        }
+       
     }
 
     return (
@@ -148,7 +185,7 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle}) => {
                     {trackVehicle.work==="fiftypercentofworkcompleted"&& <span className='h4'>Amount : {Number(trackVehicle.serviceAmount)/3} ₹</span>}
                     {trackVehicle.work==="workgoingtocomplete"&& <span className='h4'>Amount : {Number(trackVehicle.serviceAmount)/2} ₹</span>}
                     {trackVehicle.work==="workcompleted"&& <span className='h4'>Amount : {Number(trackVehicle.serviceAmount)} ₹</span>}
-                    {trackVehicle.work==="workcompleted"?<button className='btn bg-dark text-white'>Pay</button>:<button className='btn bg-dark text-white' disabled>Pay</button>}
+                    {trackVehicle.work==="workcompleted"?<button className='btn bg-dark text-white' onClick={()=>paymentProcess(trackVehicle.serviceAmount,trackVehicle.service)}>Pay</button>:<button className='btn bg-dark text-white' disabled>Pay</button>}
                     
                 </div>
             </div>}

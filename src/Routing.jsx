@@ -17,7 +17,8 @@ export const Routing = () => {
 
     <Route path='/Home/:token' element={ <Provider store={store}>
       <HomePage></HomePage>
-      </Provider>}></Route>
+      </Provider>}>
+      </Route>
       
     </Routes> 
     </BrowserRouter>

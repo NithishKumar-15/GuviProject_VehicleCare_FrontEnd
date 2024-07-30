@@ -32,7 +32,11 @@ export const HomePage = () => {
         user:res.data.UserName.name
       }
 
-      await instance.post("HomePage/GetUserAppointment",data).then((res)=>{
+      await instance.post("HomePage/GetUserAppointment",data,{
+        headers:{
+          "token":token
+        }
+      }).then((res)=>{
         console.log(res.data)
         if(Object.keys(res.data[0].Appointment).length===0){
           setTrackVehicle("");
@@ -94,7 +98,7 @@ export const HomePage = () => {
 
       {pages==="Home"&&<ServiceAndRatings allServiceDetails={allServiceDetails} feedBacks={feedBacks}/>}
       {/* Appoiment Booking */}
-      {pages==="Appointment"&&<AppoimentBooking allServiceDetails={allServiceDetails} user={user} trackVehicle={trackVehicle}/>}
+      {pages==="Appointment"&&<AppoimentBooking allServiceDetails={allServiceDetails} user={user} trackVehicle={trackVehicle} token={token}/>}
       {/* Previous History */}
       {pages==="PreviousHistory"&&<PrevoiusHistory/>}
       
