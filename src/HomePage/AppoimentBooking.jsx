@@ -54,19 +54,19 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) =>
                 payment:amount,
                 user:user
             }
-
+            console.log(data)
             await instance.post("HomePage/payment",data,{
                 headers:{
                     "token":token
                 }
             }).then((res)=>{
                 console.log(res.data)
-                if(res.data.message==="unAuthorized"){
-                    navigate("/")
-                }else{
+                if(res.data.message==="Payment success"){
                     stripe.redirectToCheckout({
-                    sessionId:res.data.id,
-                   })
+                        sessionId:res.data.session.id,
+                    })
+                }else{
+                   // navigate("/")
                 }
                
             })
@@ -113,11 +113,11 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) =>
                                     <label htmlFor='appoiment' className='col-lg-5 col-md-auto col-form-label'>Available Appointments Dates</label>
                                     <div className='col'>
                                         <select type="text" className='form-control' id='appoiment' ref={appoinmentDate}>
-                                            <option value="2024/7/29/1">2024/06/29</option>
-                                            <option value="2024/7/29/1">2024/06/29</option>
-                                            <option value="2024/7/29/1">2024/06/29</option>
-                                            <option value="2024/7/29/1">2024/06/29</option>
-                                            <option value="2024/7/29/1">2024/06/29</option>
+                                            <option value="2024/7/31/3">2024/06/29</option>
+                                            <option value="2024/7/31/3">2024/06/29</option>
+                                            <option value="2024/7/31/3">2024/06/29</option>
+                                            <option value="2024/7/31/3">2024/06/29</option>
+                                            <option value="2024/7/31/3">2024/06/29</option>
                                         </select>
                                     </div>
                                 </div>

@@ -17,8 +17,13 @@ return data
 
 const feedBacks=await getFeedBack();
 
-function ratings(state=feedBacks,action){
-    return [...state];
+function ratings(state=feedBacks,action,data){
+    if(action.type==="AddRatingData"){
+        return [...state,action.data];
+    }else{
+        return [...state];
+    }
+    
 }
 
 export default ratings;

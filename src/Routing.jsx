@@ -22,7 +22,7 @@ export const Routing = () => {
       </Provider>}>
       </Route>
       
-      <Route path='/PaymentSuccess/:user' element={<PaymentSuccessPage></PaymentSuccessPage>}></Route>
+      <Route path='/PaymentSuccess' element={<Provider store={store}><PaymentSuccessPage></PaymentSuccessPage></Provider>}></Route>
       <Route path='/PaymentCancel' element={<PaymentCanclePage></PaymentCanclePage>}></Route>
 
 

@@ -28,6 +28,9 @@ export const HomePage = () => {
       console.log(res.data.UserName)
       setUser(res.data.UserName.name);
 
+      localStorage.setItem('email',res.data.email);
+      localStorage.setItem('user',res.data.UserName.name);
+      
       const data={
         user:res.data.UserName.name
       }

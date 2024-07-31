@@ -1,6 +1,16 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
 export const PaymentCanclePage = () => {
+  
+  const navigate=useNavigate();
+
+  function paymentCancle(){
+    localStorage.setItem("user","");
+    localStorage.setItem("email","");
+    navigate("/");
+  }
+
   return (
     <div className='container-fluid d-flex flex-column' style={{backgroundColor:"rgb(248,249,250)",height:"100vh"}}>
 
@@ -15,7 +25,7 @@ export const PaymentCanclePage = () => {
 
         <div className='w-100 h-50 m-auto bg-white rounded-bottom text-dark text-center'>
             <h5 className='mb-2'>Your Payment canceled</h5>
-            <button className='btn bg-dark text-white'>Try Again</button>
+            <button className='btn bg-dark text-white' onClick={paymentCancle}>Try Again</button>
         </div>
     </div>
 
