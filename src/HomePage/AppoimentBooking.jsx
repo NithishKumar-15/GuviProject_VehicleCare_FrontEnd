@@ -113,6 +113,8 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) =>
                                     <div className='col'>
                                         <select type="text" className='form-control' id='appoiment' ref={appoinmentDate}>
                                             <option value="2024/8/2/5">2024/8/02</option>
+                                            <option value="2024/8/3/6">2024/8/03</option>
+                                            <option value="2024/8/4/7">2024/8/04</option>
                                             <option value="2024/8/5/1">2024/8/05</option>
                                             <option value="2024/8/6/2">2024/8/06</option>
                                             <option value="2024/8/7/3">2024/8/07</option>
