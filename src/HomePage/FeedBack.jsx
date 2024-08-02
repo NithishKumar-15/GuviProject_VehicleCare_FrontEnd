@@ -19,7 +19,7 @@ export const FeedBack = () => {
     }
     await instance.post("FeedBack/UserFeedBack",data).then((res)=>{
       if(res.data.message==="FeedBack inserted successfull"){
-        dispatch({type:"AddRatingData",data});
+        dispatch({type:"AddFeedBackRatingData",data});
         alert("Your feedback taken");
         localStorage.setItem("email","");
         localStorage.setItem("user","");

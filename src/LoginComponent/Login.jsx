@@ -4,6 +4,7 @@ import {Link,useNavigate} from 'react-router-dom'
 import { useRef } from 'react'
 import { useState } from 'react'
 import instance from '../AxiosInstance/axiosinstance.js'
+import { useDispatch } from 'react-redux'
 
 export const Login = () => {
 
@@ -11,6 +12,7 @@ export const Login = () => {
   const email=useRef("");
   const password=useRef("");
   const [error,setError]=useState("")
+  const dispatch=useDispatch();
 
   async function login(e){
     e.preventDefault();
@@ -25,8 +27,24 @@ export const Login = () => {
       password:password.current.value
     }
   
-    await instance.post("Users/Login",data).then((res)=>{
+    await instance.post("Users/Login",data).then(async(res)=>{
       if(res.data.message==="Login Successfull"){
+        await instance.get("ServiceDetails/AllServiceDetails").then((res)=>{
+          const data=[...res.data];
+          dispatch({type:'AddServiceDetailsData',data})
+      })
+      await instance.get("FeedBack/GetUserFeedBack").then((res)=>{
+        const data=[...res.data]
+            dispatch({type:"AddRatingData",data})
+        })
+        await instance.get("Users/PreviousHistory",{
+          headers:{
+            email:email.current.value
+          }
+        }).then((res)=>{
+          const data=res.data
+          dispatch({type:'AddPreviousHistoryData',data})
+        })
         email.current.value="";
         password.current.value="";
         navigate(`/Home/${res.data.token}`);

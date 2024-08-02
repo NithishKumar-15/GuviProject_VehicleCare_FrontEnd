@@ -1,10 +1,48 @@
-import React from 'react'
+import { React,useState,useRef } from 'react'
 
 export const ServiceAndRatings = ({allServiceDetails,feedBacks}) => {
 
-  allServiceDetails.map((val)=>{
-    console.log(val);
-  })
+  const [allServiceDetailsFilter,setAllServiceDetailsFilter]=useState(allServiceDetails);
+
+  const serviceFilter=useRef("All");
+  const priceFilter=useRef("All");
+  
+  //Filter function
+  function filteringData(){
+    
+    if(serviceFilter.current.value==="All"&&priceFilter.current.value==="All"){
+      const filterData=allServiceDetails.map((val)=>{
+        return val;
+      })
+      setAllServiceDetailsFilter(filterData);
+    }else if(serviceFilter.current.value!="All"&& priceFilter.current.value==="All"){
+      const filterData=allServiceDetails.filter((val)=>{
+        if(val.ServiceName===serviceFilter.current.value){
+          return val;
+        }
+      })
+      setAllServiceDetailsFilter(filterData);
+    }else if(serviceFilter.current.value==="All" && priceFilter.current.value!="All"){
+      const range=priceFilter.current.value.split("-").map((val)=>Number(val));
+      const filterData=allServiceDetails.filter((val)=>{
+        if(val.Price>=range[0]&&val.Price<=range[1]){
+          return val;
+        }
+      })
+      setAllServiceDetailsFilter(filterData);
+    }else{
+
+      const range=priceFilter.current.value.split("-").map((val)=>Number(val));
+      const filterData=allServiceDetails.filter((val)=>{
+        if(val.ServiceName===serviceFilter.current.value&&val.Price>=range[0]&&val.Price<=range[1]){
+          return val;
+        }
+      })
+      setAllServiceDetailsFilter(filterData);
+    }
+
+  }
+
   return (
     <div className='container-fluid servicelist'>
     <div className='container mt-5'>
@@ -16,27 +54,29 @@ export const ServiceAndRatings = ({allServiceDetails,feedBacks}) => {
       </div>
 
     <div className='col-lg-2 col-md-auto'>
-    <select className='selhome mx-auto form-select'>
+    <select className='selhome mx-auto form-select' ref={serviceFilter} onChange={filteringData}>
       <option disabled>--Selct the service--</option>
+      <option value={"All"}>All</option>
         {allServiceDetails.map((val)=>(<option key={val.ServiceName}>{val.ServiceName}</option>))}
       </select>
     </div>
 
     <div className='col-lg-2 col-md-auto'>
-      <select className='selhome form-select'>
+      <select className='selhome form-select' ref={priceFilter} onChange={filteringData}>
         <option disabled>--Select Price Range--</option>
-        <option>100-1000</option>
-        <option>1000-5000</option>
-        <option>5000-10000</option>
-        <option>10000-15000</option>
-        <option>15000-20000</option>
+        <option value={"All"}>All</option>
+        <option value={"100-1000"}>100-1000</option>
+        <option value={"1000-5000"}>1000-5000</option>
+        <option value={"5000-10000"}>5000-10000</option>
+        <option value={"10000-15000"}>10000-15000</option>
+        <option value={"15000-20000"}>15000-20000</option>
       </select>
       </div>
 
     </div>
     
     <div className='row mt-5'>
-       {allServiceDetails.map((val)=>(<div className='col-lg-4 col-auto mb-3' key={val.ServiceName}>
+      {allServiceDetailsFilter.map((val)=>(<div className='col-lg-4 col-auto mb-3' key={val.ServiceName}>
             <div className='w-75 border rounded items mx-auto'>
               <h6  className='bg-dark text-white m-0 rounded-top'>{val.ServiceName}</h6>
               <hr></hr>
@@ -69,7 +109,7 @@ export const ServiceAndRatings = ({allServiceDetails,feedBacks}) => {
     
     <div className='row mt-3'>
     {feedBacks.map((val)=>(
-      <div className='col-lg-4 col-md-auto mb-3' key={val.UserName}>
+      <div className='col-lg-4 col-md-auto mb-3' key={`${val.UserName}${val.Rating}`}>
         
       <div className='mx-auto w-100 items rounded border ratings'>
         <h4 className='bg-dark text-white mx-auto rounded-top'>{val.UserName}</h4>

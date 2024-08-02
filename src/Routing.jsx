@@ -1,6 +1,6 @@
 import React from 'react'
-import {BrowserRouter,Routes,Route} from "react-router-dom"
-import {Login} from "./LoginComponent/Login"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { Login } from "./LoginComponent/Login"
 import { NewAccount } from './NewAccountComponent/NewAccount'
 import { HomePage } from './HomePage/HomePage'
 import { PaymentSuccessPage } from './PaymentPage/PaymentSuccessPage'
@@ -11,23 +11,20 @@ import store from './Store/store'
 export const Routing = () => {
   return (
 
-   
-    <BrowserRouter> 
-    <Routes>
-    <Route path='/' element={<Login></Login>}></Route>
-    <Route path='/NewAccount' element={<NewAccount></NewAccount>}></Route>
+    <Provider store={store}>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Login></Login>}></Route>
+        <Route path='/NewAccount' element={<NewAccount></NewAccount>}></Route>
 
-    <Route path='/Home/:token' element={ <Provider store={store}>
-      <HomePage></HomePage>
-      </Provider>}>
-      </Route>
-      
-      <Route path='/PaymentSuccess' element={<Provider store={store}><PaymentSuccessPage></PaymentSuccessPage></Provider>}></Route>
-      <Route path='/PaymentCancel' element={<PaymentCanclePage></PaymentCanclePage>}></Route>
+        <Route path='/Home/:token' element={<HomePage></HomePage>}></Route>
+        <Route path='/PaymentSuccess' element={<PaymentSuccessPage></PaymentSuccessPage>}></Route>
+        <Route path='/PaymentCancel' element={<PaymentCanclePage></PaymentCanclePage>}></Route>
 
 
-    </Routes> 
+      </Routes>
     </BrowserRouter>
-    
+    </Provider>
+
   )
 }

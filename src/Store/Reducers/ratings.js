@@ -1,25 +1,11 @@
-import instance from "../../AxiosInstance/axiosinstance";
 
-// let feedBacks;
+const feedBacks=[];
 
-// await instance.get("FeedBack/GetUserFeedBack").then((res)=>{
-//     feedBacks=[...res.data]
-// })
-
-
-async function getFeedBack(){
-    let data;
-await instance.get("FeedBack/GetUserFeedBack").then((res)=>{
-   data=[...res.data];
-})
-return data
-}
-
-const feedBacks=await getFeedBack();
-
-function ratings(state=feedBacks,action,data){
+function ratings(state=feedBacks,action){
     if(action.type==="AddRatingData"){
-        return [...state,action.data];
+        return [...action.data];
+    }else if(action.type==="AddFeedBackRatingData"){
+        return[...state,action.data]
     }else{
         return [...state];
     }

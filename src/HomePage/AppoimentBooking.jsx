@@ -47,7 +47,6 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) =>
     }
 
     async function paymentProcess(amount,service){
-        console.log(service,amount);
         try{
             const data={
                 service:service,
@@ -66,7 +65,7 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) =>
                         sessionId:res.data.session.id,
                     })
                 }else{
-                   // navigate("/")
+                   navigate("/")
                 }
                
             })
@@ -113,11 +112,26 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) =>
                                     <label htmlFor='appoiment' className='col-lg-5 col-md-auto col-form-label'>Available Appointments Dates</label>
                                     <div className='col'>
                                         <select type="text" className='form-control' id='appoiment' ref={appoinmentDate}>
-                                            <option value="2024/7/31/3">2024/06/29</option>
-                                            <option value="2024/7/31/3">2024/06/29</option>
-                                            <option value="2024/7/31/3">2024/06/29</option>
-                                            <option value="2024/7/31/3">2024/06/29</option>
-                                            <option value="2024/7/31/3">2024/06/29</option>
+                                            <option value="2024/8/2/5">2024/8/02</option>
+                                            <option value="2024/8/5/1">2024/8/05</option>
+                                            <option value="2024/8/6/2">2024/8/06</option>
+                                            <option value="2024/8/7/3">2024/8/07</option>
+                                            <option value="2024/8/8/4">2024/8/08</option>
+                                            <option value="2024/8/9/5">2024/8/09</option>
+                                            <option value="2024/8/10/6">2024/8/10</option>
+                                            <option value="2024/8/11/7">2024/8/11</option>
+                                            <option value="2024/8/12/1">2024/8/12</option>
+                                            <option value="2024/8/13/2">2024/8/13</option>
+                                            <option value="2024/8/14/3">2024/8/14</option>
+                                            <option value="2024/8/15/4">2024/8/15</option>
+                                            <option value="2024/8/16/5">2024/8/16</option>
+                                            <option value="2024/8/17/6">2024/8/17</option>
+                                            <option value="2024/8/18/7">2024/8/18</option>
+                                            <option value="2024/8/19/1">2024/8/19</option>
+                                            <option value="2024/8/20/2">2024/8/20</option>
+                                            <option value="2024/8/21/3">2024/8/21</option>
+                                            <option value="2024/8/22/4">2024/8/22</option>
+                                            <option value="2024/8/23/5">2024/8/23</option>
                                         </select>
                                     </div>
                                 </div>
@@ -132,7 +146,7 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) =>
                                 </div>
                                 {successMessage!=null&& 
                                 <div className='mb-3  text-center'>
-                                <label className='form-text text-success'>Your Appoinment Booked you will get email on date of appoinment Please login again to track your vehicle</label>
+                                <label className='form-text text-success'>Your Appoinment Booked you will get an email on the date of appoinment</label>
                                 </div>
                                 }
                                 <button className='btn bg-dark text-white d-flex mx-auto'>Book Appointment</button>

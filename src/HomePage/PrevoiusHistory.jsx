@@ -1,19 +1,34 @@
-import React from 'react'
+import { React, useState } from 'react'
 
-export const PrevoiusHistory = () => {
+export const PrevoiusHistory = ({ userPreviousVehicleHistory }) => {
+
+  const previousHistoryDateCorrection = userPreviousVehicleHistory.map((val) => {
+    const Date = val.appoinmentDate.split("/");
+    Date.pop();
+    const FullDate = Date.join("/");
+    return {
+      ...val,
+      appoinmentDate: FullDate
+    }
+  })
   return (
-    <div className='w-50 h-25 mx-auto d-flex justify-content-between border rounded p-3 mt-3'>
-        <div>
-          <span className='h5' style={{color:"rgb(85,90,150)"}}>Nithish kumar</span>
-          <p className='ms-1 text-secondary'>(TN-05-BQ-0240)- General Service</p>
-        </div>
-        <div className='text-secondary'>
-          <h6>Serviced on 03/04/2024</h6>
-          <div className='d-flex'>
-          <span>Rating</span>
-          <div className='border border-dark text-center ms-3 m-0' style={{width:"30px"}}>5</div>
+    <>
+      {previousHistoryDateCorrection.map((val) => (
+        <div className='w-50 h-25 mx-auto d-flex justify-content-between border rounded p-3 mt-3' key={val.vehicleNumber}>
+          <div>
+            <span className='h5' style={{ color: "rgb(85,90,150)" }}>{val.customerName}</span>
+            <p className='ms-1 text-secondary'>({val.vehicleNumber})-{val.service}</p>
+          </div>
+          <div className='text-secondary'>
+            <h6>Serviced on {val.appoinmentDate}</h6>
+            <div className='d-flex'>
+              <span>Rating</span>
+              <div className='border border-dark text-center ms-3 m-0' style={{ width: "30px" }}>5</div>
+            </div>
           </div>
         </div>
-      </div>
+      )
+      )}
+    </>
   )
 }

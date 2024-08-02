@@ -3,7 +3,7 @@ import {ServiceAndRatings} from "./ServiceAndRatings"
 import {AppoimentBooking} from "./AppoimentBooking"
 import {PrevoiusHistory} from "./PrevoiusHistory"
 import { Link, useParams ,useNavigate} from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import instance from '../AxiosInstance/axiosinstance'
 import "./homepage.css"
 
@@ -13,7 +13,9 @@ export const HomePage = () => {
   const {token}=useParams()
   const allServiceDetails=useSelector((state)=>state.serviceDetailsReducer);
   const feedBacks=useSelector((state)=>state.ratings);
-  console.log(feedBacks);
+  const userPreviousVehicleHistory=useSelector((state)=>state.previousHistory);
+
+  const dispatch=useDispatch();
   const navigate=useNavigate();
 
   const [user,setUser]=useState("");
@@ -39,7 +41,7 @@ export const HomePage = () => {
         headers:{
           "token":token
         }
-      }).then((res)=>{
+      }).then(async(res)=>{
         console.log(res.data)
         if(Object.keys(res.data[0].Appointment).length===0){
           setTrackVehicle("");
@@ -47,6 +49,7 @@ export const HomePage = () => {
           setTrackVehicle(res.data[0].Appointment);
         }
       })
+     
     })
 
     }catch(e){
@@ -103,7 +106,7 @@ export const HomePage = () => {
       {/* Appoiment Booking */}
       {pages==="Appointment"&&<AppoimentBooking allServiceDetails={allServiceDetails} user={user} trackVehicle={trackVehicle} token={token}/>}
       {/* Previous History */}
-      {pages==="PreviousHistory"&&<PrevoiusHistory/>}
+      {pages==="PreviousHistory"&&<PrevoiusHistory userPreviousVehicleHistory={userPreviousVehicleHistory}/>}
       
       <br></br>
       <br></br>
