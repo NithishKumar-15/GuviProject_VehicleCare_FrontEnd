@@ -3,9 +3,10 @@ import instance from '../AxiosInstance/axiosinstance';
 import { loadStripe } from '@stripe/stripe-js';
 import { useNavigate } from 'react-router-dom';
 
-const stripe=await loadStripe(import.meta.env.VITE_STRIPE_PLUBISHIBLEKEY);
 
-export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) => {
+export const AppoimentBooking = async({allServiceDetails,user,trackVehicle,token}) => {
+    
+    const stripe=await loadStripe(import.meta.env.VITE_STRIPE_PLUBISHIBLEKEY);
 
     const [successMessage,setSuccessMessage]=useState(null)
     
