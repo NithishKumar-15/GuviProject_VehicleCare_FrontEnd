@@ -8,6 +8,7 @@ const stripe=await loadStripe(import.meta.env.VITE_STRIPE_PLUBISHIBLEKEY);
 export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) => {
 
     const [successMessage,setSuccessMessage]=useState(null)
+    
     //useRefs to handel the appoinment form inputs
     const customerName=useRef();
     const phoneNumber=useRef();
@@ -17,20 +18,18 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) =>
 
     const navigate=useNavigate();
 
-    console.log(trackVehicle)
-
     async function appoinmentBooking(e){
         e.preventDefault();
 
         const data={
+            email:localStorage.getItem("email"),
             customerName:customerName.current.value,
             phoneNumber:phoneNumber.current.value,
             vehicleNumber:vehicleNumber.current.value,
             appoinmentDate:appoinmentDate.current.value,
             service:service.current.value
         }
-
-         
+        
            await instance.post("HomePage/AppointmentBook",data,{
             headers:{
                 "token":token
@@ -46,13 +45,14 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) =>
            })
     }
 
-    async function paymentProcess(amount,service){
+    async function paymentProcess(amount,service,id){
         try{
             const data={
                 service:service,
                 payment:amount,
                 user:user
             }
+            localStorage.setItem("Id",id)
             console.log(data)
             await instance.post("HomePage/payment",data,{
                 headers:{
@@ -162,39 +162,39 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) =>
 
             <h1 className='text-center mt-5'>Track your vehicle</h1>
 
-           {trackVehicle!=""&&<div className='trackAP mx-auto w-75 my-5 border rounded'>
-                <span className='h5'>Vehicle Number: </span> <span className='h5'>{trackVehicle.vehicleNumber}</span>
+           {trackVehicle!=""&&trackVehicle.map((val)=>(<div className='trackAP mx-auto w-75 my-5 border rounded' key={val.vehicleNumber}>
+                <span className='h5'>Vehicle Number: </span> <span className='h5'>{val.vehicleNumber}</span>
                 <div className='row my-5 mx-auto'>
 
-                    {trackVehicle.work==="workstarted"?<div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
+                    {val.work==="workstarted"?<div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
                         <h5>Work Started</h5>
                     </div>:
                     <div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(229,229,229)" }}>
                         <h5>Work Started</h5>
                     </div>}
 
-                    {trackVehicle.work==="workonprocess"?<div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
+                    {val.work==="workonprocess"?<div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
                         <h5>Work On process</h5>
                     </div>:
                     <div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(229,229,229)" }}>
                         <h5>Work On process</h5>
                     </div>}
 
-                    {trackVehicle.work==="fiftypercentofworkcompleted"?<div className='col-lg-3 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
+                    {val.work==="fiftypercentofworkcompleted"?<div className='col-lg-3 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
                         <h5>Fifty percent work completed</h5>
                     </div>:
                     <div className='col-lg-3 col-md-auto text-center' style={{ backgroundColor: "rgb(229,229,229)" }}>
                         <h5>Fifty percent work completed</h5>
                     </div>}
 
-                    {trackVehicle.work==="workgoingtocomplete"?<div className='col-lg-3 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
+                    {val.work==="workgoingtocomplete"?<div className='col-lg-3 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
                         <h5>Work Going to complete</h5>
                     </div>:
                     <div className='col-lg-3 col-md-auto text-center' style={{ backgroundColor: "rgb(229,229,229)" }}>
                         <h5>Work Going to complete</h5>
                     </div>}
 
-                    {trackVehicle.work==="workcompleted"?<div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
+                    {val.work==="workcompleted"?<div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(33,37,41)", color: "white" }}>
                         <h5>Work completed</h5>
                     </div>:
                     <div className='col-lg-2 col-md-auto text-center' style={{ backgroundColor: "rgb(229,229,229)" }}>
@@ -203,15 +203,15 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) =>
 
                 </div>
                 <div className='d-flex justify-content-between px-3 mb-3'>
-                    {trackVehicle.work==="workstarted"&& <span className='h4'>Amount : {Number(trackVehicle.serviceAmount)/5} ₹</span>}
-                    {trackVehicle.work==="workonprocess"&& <span className='h4'>Amount : {Number(trackVehicle.serviceAmount)/4} ₹</span>}
-                    {trackVehicle.work==="fiftypercentofworkcompleted"&& <span className='h4'>Amount : {Number(trackVehicle.serviceAmount)/3} ₹</span>}
-                    {trackVehicle.work==="workgoingtocomplete"&& <span className='h4'>Amount : {Number(trackVehicle.serviceAmount)/2} ₹</span>}
-                    {trackVehicle.work==="workcompleted"&& <span className='h4'>Amount : {Number(trackVehicle.serviceAmount)} ₹</span>}
-                    {trackVehicle.work==="workcompleted"?<button className='btn bg-dark text-white' onClick={()=>paymentProcess(trackVehicle.serviceAmount,trackVehicle.service)}>Pay</button>:<button className='btn bg-dark text-white' disabled>Pay</button>}
+                    {val.work==="workstarted"&& <span className='h4'>Amount : {Number(val.serviceAmount)/5} ₹</span>}
+                    {val.work==="workonprocess"&& <span className='h4'>Amount : {Number(val.serviceAmount)/4} ₹</span>}
+                    {val.work==="fiftypercentofworkcompleted"&& <span className='h4'>Amount : {Number(val.serviceAmount)/3} ₹</span>}
+                    {val.work==="workgoingtocomplete"&& <span className='h4'>Amount : {Number(val.serviceAmount)/2} ₹</span>}
+                    {val.work==="workcompleted"&& <span className='h4'>Amount : {Number(val.serviceAmount)} ₹</span>}
+                    {val.work==="workcompleted"?<button className='btn bg-dark text-white' onClick={()=>paymentProcess(val.serviceAmount,val.service,val.id)}>Pay</button>:<button className='btn bg-dark text-white' disabled>Pay</button>}
                     
                 </div>
-            </div>}
+            </div>))}
         </>
     )
 }

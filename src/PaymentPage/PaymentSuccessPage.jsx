@@ -7,10 +7,12 @@ export const PaymentSuccessPage = () => {
 
   async function paymentSuccess(){
       const data={
-        email:localStorage.getItem("email")
+        email:localStorage.getItem("email"),
+        id:localStorage.getItem("Id")
       }
       await instance.put("Users/addPeviousHistory",data).then((res)=>{
         if(res.data.message==="Data update to previous history"){
+          localStorage.setItem("Id","");
           setPage("");
         }
       })

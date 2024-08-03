@@ -7,8 +7,6 @@
 }
 
 .items{
-    /* box-shadow: 5px 5px;
-    border-radius:10px; */
     height:350px;
     background-color:rgb(247,248,250);
     line-height: 1.2rem;
@@ -52,10 +50,6 @@ p{
 #formcontentAP{
     background-color: rgb(229,229,229);
 }
-
-/* #containerAP{
-    height:100vh;
-} */
 
 .trackAP{
     width: fit-content;

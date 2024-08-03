@@ -3,7 +3,7 @@ import {ServiceAndRatings} from "./ServiceAndRatings"
 import {AppoimentBooking} from "./AppoimentBooking"
 import {PrevoiusHistory} from "./PrevoiusHistory"
 import { Link, useParams ,useNavigate} from 'react-router-dom'
-import {useDispatch, useSelector} from 'react-redux'
+import {useSelector} from 'react-redux'
 import instance from '../AxiosInstance/axiosinstance'
 import "./homepage.css"
 
@@ -15,7 +15,6 @@ export const HomePage = () => {
   const feedBacks=useSelector((state)=>state.ratings);
   const userPreviousVehicleHistory=useSelector((state)=>state.previousHistory);
 
-  const dispatch=useDispatch();
   const navigate=useNavigate();
 
   const [user,setUser]=useState("");
@@ -27,14 +26,14 @@ export const HomePage = () => {
     async function verifyToken(){
       try{
      await instance.post('Users/verifyToken',{token:token}).then(async(res)=>{
-      console.log(res.data.UserName)
+      
       setUser(res.data.UserName.name);
 
       localStorage.setItem('email',res.data.email);
       localStorage.setItem('user',res.data.UserName.name);
       
       const data={
-        user:res.data.UserName.name
+        email:res.data.email
       }
 
       await instance.post("HomePage/GetUserAppointment",data,{
@@ -43,17 +42,17 @@ export const HomePage = () => {
         }
       }).then(async(res)=>{
         console.log(res.data)
-        if(Object.keys(res.data[0].Appointment).length===0){
-          setTrackVehicle("");
+        if(res.data.length>0){
+          setTrackVehicle(res.data);
         }else{
-          setTrackVehicle(res.data[0].Appointment);
+          setTrackVehicle("");
         }
       })
      
     })
 
     }catch(e){
-      console.log("err")
+      console.log("err",e)
       navigate("/")
     }
   }
