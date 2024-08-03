@@ -47,6 +47,7 @@ export const AppoimentBooking = ({allServiceDetails,user,trackVehicle,token}) =>
     }
 
     async function paymentProcess(amount,service,id){
+        const stripe=await loadStripe(import.meta.env.VITE_STRIPE_PLUBISHIBLEKEY);
         try{
             const data={
                 service:service,
