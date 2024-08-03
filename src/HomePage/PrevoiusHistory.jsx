@@ -2,6 +2,7 @@ import { React } from 'react'
 
 export const PrevoiusHistory = ({ userPreviousVehicleHistory }) => {
 
+  //To bring the date to correct format it was like 2024/8/03/1 something like this to bring it in a proper fromat
   const previousHistoryDateCorrection = userPreviousVehicleHistory.map((val) => {
     const Date = val.appoinmentDate.split("/");
     Date.pop();

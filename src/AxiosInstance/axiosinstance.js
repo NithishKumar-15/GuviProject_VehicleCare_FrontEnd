@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const instance=axios.create({
-    baseURL:"https://project-vehiclecareplatform-backend.onrender.com/",
-    //baseURL:"http://localhost:5000/"
+//API instance
+const instance = axios.create({
+    baseURL: "https://project-vehiclecareplatform-backend.onrender.com/",
 })
 
 export default instance;

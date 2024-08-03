@@ -1,13 +1,13 @@
 
-const allServiceDetails=[];
+const allServiceDetails = [];
 
 
-function serviceDetailsReducer(state=allServiceDetails,action){
-    if(action.type==="AddServiceDetailsData"){
+function serviceDetailsReducer(state = allServiceDetails, action) {
+    if (action.type === "AddServiceDetailsData") {
         return [...action.data];
-    }else{
+    } else {
         return state
-    }  
+    }
 }
 
 export default serviceDetailsReducer

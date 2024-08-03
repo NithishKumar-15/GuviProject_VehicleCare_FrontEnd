@@ -3,8 +3,9 @@ import serviceDetailsReducer from "./Reducers/serviceDetails";
 import ratings from "./Reducers/ratings";
 import previousHistory from "./Reducers/previousHistory";
 
-const store=configureStore({
-    reducer:{
+//Configured redux store
+const store = configureStore({
+    reducer: {
         serviceDetailsReducer,
         ratings,
         previousHistory

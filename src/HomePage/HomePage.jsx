@@ -1,73 +1,75 @@
-import { React,useState,useEffect} from 'react'
-import {ServiceAndRatings} from "./ServiceAndRatings"
-import {AppoimentBooking} from "./AppoimentBooking"
-import {PrevoiusHistory} from "./PrevoiusHistory"
-import { Link, useParams ,useNavigate} from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import { React, useState, useEffect } from 'react'
+import { ServiceAndRatings } from "./ServiceAndRatings"
+import { AppoimentBooking } from "./AppoimentBooking"
+import { PrevoiusHistory } from "./PrevoiusHistory"
+import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import instance from '../AxiosInstance/axiosinstance'
 import "./homepage.css"
 
 
 export const HomePage = () => {
-  
-  const {token}=useParams()
-  const allServiceDetails=useSelector((state)=>state.serviceDetailsReducer);
-  const feedBacks=useSelector((state)=>state.ratings);
-  const userPreviousVehicleHistory=useSelector((state)=>state.previousHistory);
 
-  const navigate=useNavigate();
+  const { token } = useParams()
+  const allServiceDetails = useSelector((state) => state.serviceDetailsReducer);
+  const feedBacks = useSelector((state) => state.ratings);
+  const userPreviousVehicleHistory = useSelector((state) => state.previousHistory);
 
-  const [user,setUser]=useState("");
-  
-   //State to track the vehicle
-   const [trackVehicle,setTrackVehicle]=useState();
-  
-  useEffect(()=>{
-    async function verifyToken(){
-      try{
-     await instance.post('Users/verifyToken',{token:token}).then(async(res)=>{
-      
-      setUser(res.data.UserName.name);
+  const navigate = useNavigate();
 
-      localStorage.setItem('email',res.data.email);
-      localStorage.setItem('user',res.data.UserName.name);
-      
-      const data={
-        email:res.data.email
+  const [user, setUser] = useState("");
+
+  //State to track the vehicle
+  const [trackVehicle, setTrackVehicle] = useState();
+
+  //Use effect to verify the token and get the user Appointment
+  useEffect(() => {
+    async function verifyToken() {
+      try {
+        await instance.post('Users/verifyToken', { token: token }).then(async (res) => {
+
+          setUser(res.data.UserName.name);
+
+          localStorage.setItem('email', res.data.email);
+          localStorage.setItem('user', res.data.UserName.name);
+
+          const data = {
+            email: res.data.email
+          }
+
+          //API call for user details
+          await instance.post("HomePage/GetUserAppointment", data, {
+            headers: {
+              "token": token
+            }
+          }).then(async (res) => {
+            console.log(res.data)
+            if (res.data.length > 0) {
+              setTrackVehicle(res.data);
+            } else {
+              setTrackVehicle("");
+            }
+          })
+
+        })
+
+      } catch (e) {
+        console.log("err", e)
+        navigate("/")
       }
-
-      await instance.post("HomePage/GetUserAppointment",data,{
-        headers:{
-          "token":token
-        }
-      }).then(async(res)=>{
-        console.log(res.data)
-        if(res.data.length>0){
-          setTrackVehicle(res.data);
-        }else{
-          setTrackVehicle("");
-        }
-      })
-     
-    })
-
-    }catch(e){
-      console.log("err",e)
-      navigate("/")
     }
-  }
-  verifyToken();
-  },[])
+    verifyToken();
+  }, [])
 
 
-  const [pages,setPages]=useState("Home");
+  const [pages, setPages] = useState("Home");
 
-  function handelPages(page){
-    if(page==="Home"){
+  function handelPages(page) {
+    if (page === "Home") {
       setPages("Home");
-    }else if(page==="Appointment"){
+    } else if (page === "Appointment") {
       setPages("Appointment")
-    }else if(page==="PreviousHistory"){
+    } else if (page === "PreviousHistory") {
       setPages("PreviousHistory")
     }
   }
@@ -83,13 +85,13 @@ export const HomePage = () => {
             <div className='collapse navbar-collapse' id="navitemlink">
               <ul className='navbar-nav me-auto'>
                 <li className='navbar-item'>
-                  {pages==="Home"?<Link className='nav-link active' onClick={()=>handelPages("Home")}>Home</Link>:<Link className='nav-link' onClick={()=>handelPages("Home")}>Home</Link>}
+                  {pages === "Home" ? <Link className='nav-link active' onClick={() => handelPages("Home")}>Home</Link> : <Link className='nav-link' onClick={() => handelPages("Home")}>Home</Link>}
                 </li>
                 <li className='navbar-item'>
-                {pages==="Appointment"?<Link className='nav-link active' onClick={()=>handelPages("Appointment")}>Appointment Booking</Link>:<Link className='nav-link' onClick={()=>handelPages("Appointment")}>Appointment Booking</Link>}
+                  {pages === "Appointment" ? <Link className='nav-link active' onClick={() => handelPages("Appointment")}>Appointment Booking</Link> : <Link className='nav-link' onClick={() => handelPages("Appointment")}>Appointment Booking</Link>}
                 </li>
                 <li className='navbar-item'>
-                  {pages==="PreviousHistory"?<Link className='nav-link active' onClick={()=>handelPages("PreviousHistory")}>Previous Service History</Link>:<Link className='nav-link' onClick={()=>handelPages("PreviousHistory")}>Previous Service History</Link>}
+                  {pages === "PreviousHistory" ? <Link className='nav-link active' onClick={() => handelPages("PreviousHistory")}>Previous Service History</Link> : <Link className='nav-link' onClick={() => handelPages("PreviousHistory")}>Previous Service History</Link>}
                 </li>
               </ul>
               <span className="navbar-text me-2">
@@ -101,12 +103,12 @@ export const HomePage = () => {
         </nav>
       </header>
 
-      {pages==="Home"&&<ServiceAndRatings allServiceDetails={allServiceDetails} feedBacks={feedBacks}/>}
+      {pages === "Home" && <ServiceAndRatings allServiceDetails={allServiceDetails} feedBacks={feedBacks} />}
       {/* Appoiment Booking */}
-      {pages==="Appointment"&&<AppoimentBooking allServiceDetails={allServiceDetails} user={user} trackVehicle={trackVehicle} token={token}/>}
+      {pages === "Appointment" && <AppoimentBooking allServiceDetails={allServiceDetails} user={user} trackVehicle={trackVehicle} token={token} />}
       {/* Previous History */}
-      {pages==="PreviousHistory"&&<PrevoiusHistory userPreviousVehicleHistory={userPreviousVehicleHistory}/>}
-      
+      {pages === "PreviousHistory" && <PrevoiusHistory userPreviousVehicleHistory={userPreviousVehicleHistory} />}
+
       <br></br>
       <br></br>
       <br></br>
